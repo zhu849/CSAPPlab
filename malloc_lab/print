@@ -926,11 +926,11 @@ static void printresults(int n, stats_t *stats)
     double util = 0;
 
     /* Print the individual results for each trace */
-    printf("%7s%9s %7s%10s%12s%8s\n", 
+    printf("%5s%7s %5s%8s%10s%6s\n", 
 	   "trace", " valid", "util", "ops", "secs", "Kops");
     for (i=0; i < n; i++) {
 	if (stats[i].valid) {
-	    printf("%4d%12s%7.0f%%%10.0f%12.6f%8.0f\n", 
+	    printf("%2d  %10s  %5.0f  %%%8.0f  %10.6f  %6.0f\n", 
 		   i,
 		   "yes",
 		   stats[i].util*100.0,
@@ -942,7 +942,7 @@ static void printresults(int n, stats_t *stats)
 	    util += stats[i].util;
 	}
 	else {
-	    printf("%6d%14s%10s%12s%14s%10s\n", 
+	    printf("%2d  %10s  %6s  %8s  %10s  %6s\n", 
 		   i,
 		   "no",
 		   "-",
@@ -954,7 +954,7 @@ static void printresults(int n, stats_t *stats)
 
     /* Print the aggregate results for the set of traces */
     if (errors == 0) {
-	printf("%14s%7.0f%%%10.0f%12.6f%8.0f\n", 
+	printf("%12s%5.0f%%%8.0f%10.6f%6.0f\n", 
 	       "Total       ",
 	       (util/n)*100.0,
 	       ops, 
@@ -962,7 +962,7 @@ static void printresults(int n, stats_t *stats)
 	       (ops/1e3)/secs);
     }
     else {
-	printf("%14s%8s%10s%12s%8s\n", 
+	printf("%12s%6s%8s%10s%6s\n", 
 	       "Total       ",
 	       "-", 
 	       "-", 
