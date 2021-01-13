@@ -942,7 +942,7 @@ static void printresults(int n, stats_t *stats)
 	    util += stats[i].util;
 	}
 	else {
-	    printf("%6d%14s%10s%12s%14s%10s\n", 
+	    printf("%4d%12s%8s%10s%12s%8s\n", 
 		   i,
 		   "no",
 		   "-",

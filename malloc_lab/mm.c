@@ -210,19 +210,19 @@ static void *coalesce(void *bp) {
     return bp;
 }
 
+
 /*
  * place - 
  */
-static void place(void *bp, size_t asize){
+//static void place(void *bp, size_t asize){
 
-}
+//}
 
 /*
  * find_fit - 
  */
-static void *find_fit(size_t asize)(){
+//static void *find_fit(size_t asize)(){
 
-}
-
+//}
 
 
