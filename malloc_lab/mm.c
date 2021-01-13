@@ -38,7 +38,7 @@ team_t team = {
 /*Basic constants and macros */
 #define WSIZE 4  /*word and header/footer size (bytes) */
 #define DSIZE 8  /*Double word size (bytes) */
-#define CHUNKSIZE (1<<6) /*extend heap by this amount (bytes) */
+#define CHUNKSIZE (1<<12) /*extend heap by this amount (bytes) */
 
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
 
@@ -53,7 +53,7 @@ team_t team = {
 #define GET_SIZE(p)  (GET(p) & ~0x7)
 #define GET_ALLOC(p) (GET(p) & 0x1)
 
-/*Given bock ptr bp, compute address of its header and footer */
+/*Given block ptr bp, compute address of its header and footer */
 #define HDRP(bp)   ((char *)(bp) - WSIZE)
 #define FTRP(bp)   ((char *)(bp) + GET_SIZE(HDRP(bp)) - DSIZE)
 
@@ -71,13 +71,20 @@ team_t team = {
 
 #define SIZE_T_SIZE (ALIGN(sizeof(size_t)))
 
+/* Global variable */
+static char *heap_listp;
+
+/* Function declared */
+static void *extend_heap(size_t words);
+
+
 /* 
  * mm_init - initialize the malloc package.
  */
 int mm_init(void) {
     /* Create the initial empty heap */
     if ((heap_listp = mem_sbrk(4 * WSIZE)) == (void *)-1)
-    return -1;
+    	return -1; // failure create heap space 
     PUT(heap_listp, 0);                            /* Alignment padding */
     PUT(heap_listp + (1 * WSIZE), PACK(DSIZE, 1)); /* Prologue header */
     PUT(heap_listp + (2 * WSIZE), PACK(DSIZE, 1)); /* Prologue footer */
@@ -136,26 +143,6 @@ void mm_free(void *ptr) {
 }
 
 /*
- * mm_realloc - Implemented simply in terms of mm_malloc and mm_free
- */
-void *mm_realloc(void *ptr, size_t size)
-{
-    void *oldptr = ptr;
-    void *newptr;
-    size_t copySize;
-    
-    newptr = mm_malloc(size);
-    if (newptr == NULL)
-      return NULL;
-    copySize = *(size_t *)((char *)oldptr - SIZE_T_SIZE);
-    if (size < copySize)
-      copySize = size;
-    memcpy(newptr, oldptr, copySize);
-    mm_free(oldptr);
-    return newptr;
-}
-
-/*
  * extend_heap - Extends the heap with a new free block
  */
 static void *extend_heap(size_t words) {
@@ -173,6 +160,26 @@ static void *extend_heap(size_t words) {
 
     /* Coalesce if the previous block was free */
     return coalesce(bp);
+}
+
+/*
+ * mm_realloc - Implemented simply in terms of mm_malloc and mm_free
+ */
+void *mm_realloc(void *ptr, size_t size)
+{
+    void *oldptr = ptr;
+    void *newptr;
+    size_t copySize;
+    
+    newptr = mm_malloc(size);
+    if (newptr == NULL)
+      return NULL;
+    copySize = *(size_t *)((char *)oldptr - SIZE_T_SIZE);
+    if (size < copySize)
+      copySize = size;
+    memcpy(newptr, oldptr, copySize);
+    mm_free(oldptr);
+    return newptr;
 }
 
 /*
